@@ -6,15 +6,13 @@ class Node(object):
     
     a Node represents a state in the *game tree*. 
     
-    evaluating a sequence of nodes, all the way to
-    the terminal node, is a *playout*.
+    evaluating a sequence of nodes, all the way to the terminal node, is a 
+    *playout*.
     
-    once fully instantiated, each Node will know
-    its parent and children. terminal Nodes will
-    contain payouts/utility values.
+    once fully instantiated, each Node knows its parent and children. terminal 
+    Nodes contain payouts/utility values.
     
-    only nodes that spawn a playout can be marked
-    as visited.
+    only nodes that spawn a playout can be marked as visited.
     """
     
     def __init__(self, name, reward=None):
@@ -47,31 +45,33 @@ class Node(object):
         
     @property
     def select_unvisited_children(self):
-        """for a given node, select an unvisited child.
+        """for a given node, randomly return an unvisited child node.
         
-        a node is considered "expanded" once all of its children
-        has been visited.        
+        a node is considered "expanded" once all of its children has been 
+        visited.        
         """
-        # option 1: root node still has unvisited children (aka not expanded)
+        
+        # option 1: root has unvisited children (ie it has not been expanded)
         if not self.is_expanded:
             
-            # select child for rollout
+            # randomly select an unvisited child node for rollout
             selected_child = np.random.choice(self.ls_unvisited_children_)
             
-            # housekeeping
+            # housekeeping so we dont double count
             self.ls_unvisited_children_.remove(selected_child)
             return selected_child
         
-        # option 2: all children have been evaluated, so select child with the highest ucb score
+        # option 2: all children have been evaluated so select child with the highest ucb score
         else:
             selected_child = None
             max_ucb = 0
             
-            # select child with the highest ucb score 
+            # find child with the highest ucb score 
             for child in self.ls_children_:
-                if child._calculate_ucb > max_ucb:
+                score = child._calculate_ucb
+                if  score > max_ucb:
                     selected_child = child
-                    max_ucb = child._calculate_ucb
+                    max_ucb = score  # new score to beat
             return selected_child
         
     @property

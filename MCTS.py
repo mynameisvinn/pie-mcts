@@ -23,36 +23,35 @@ class MCTS(object):
             # add node for qa tracing
             trace.append(curr_child)
 
-            # start rollout from unvisited child
+            # start rollout from unvisited child (not from the root)
             while True:
                 next_child = np.random.choice(curr_child.ls_children_)
                 trace.append(next_child)
 
-                # option 1: child is terminal, so get its utility value
+                # option 1: child is terminal so get its reward
                 if next_child.is_terminal:
                     outcome = next_child.reward
                     break
 
-                # option 2: child has children
+                # option 2: child has children so continue
                 else:
                     curr_child = next_child
 
-
-            # propagate - for each node, update its (a) win and (b) games played counts
+            # propagate - for each node, update its (a) win and (b) games played
             for node in trace:
-                node.q += outcome
-                node.n += 1
-                
+                node.q += outcome  # total reward
+                node.n += 1  # games played
+        
+        # finally, return child with the best prospects        
         return self._select_child().name
     
     
     def _select_child(self):
-        """return root node's child with the most plays (not
-        biggest ucb).
+        """return root node's child with the most plays (not biggest ucb).
         
         
-        mcts will naturally favor children with high ucb 
-        scores by selecting them more often. 
+        mcts will naturally favor children with high ucb scores by selecting 
+        them more often. thats why play count indicates a good option.
         """
         
         max_plays = 0
@@ -62,5 +61,4 @@ class MCTS(object):
             if child.n > max_plays:
                 selected_child = child
                 max_plays = child.n
-
         return selected_child
