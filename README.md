@@ -2,6 +2,6 @@
 a toy implementation of monte carlo tree search. it is one of the most powerful methods for balancing exploration versus exploitation.
 
 ## how dey do dat's
-mcts samples trajectories, starting from all possible children nodes of the root. the payout of a trajectory is "propagated" upwards through its ancestor nodes. 
+mcts simulates rollouts, starting from all possible children from the current state (root). for each rollout, the payout is "propagated" through all nodes in that particular rollout.
 
-nodes that have high payouts are sampled more often (due to high ucb scores). at the end of mcts, we select the root child that was played the most.
+ultimately, nodes that eventually lead to high payouts are sampled more often (due to higher ucb scores). at the end of mcts, we select the child of the root state with the highest play count.
